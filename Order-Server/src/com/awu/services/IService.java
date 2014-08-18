@@ -6,5 +6,5 @@ package com.awu.services;
  *
  */
 public interface IService {
-
+	String ServiceName();
 }
