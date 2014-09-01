@@ -7,8 +7,8 @@ CREATE TABLE `orderdb`.`custom` (
   `age` INT NULL,
   `sex` INT NULL DEFAULT 1,
   `phoneNumber` VARCHAR(100) NULL,
-  PRIMARY KEY (`idCustom`))
-ENGINE = InnoDB;
+  PRIMARY KEY (`idCustom`));
+  
 ###################################################
 #2.sex TABLE
 #1 is male
@@ -22,6 +22,7 @@ ENGINE = InnoDB;
 
 INSERT INTO sex(idsex,fullname)
 VALUES(1,'ÄÐ'),(0,'Å®')
+
 ###################################################
 #3.orderstate TABLE
 
@@ -42,6 +43,7 @@ CREATE TABLE `orderdb`.`tablestate` (
 
 INSERT INTO tablestate(idtablestate,fullname)
 VALUES(1,'¿Õ×À'),(2,'Ô¤¶¨'),(3,'¾Í²Í'),(4,'Æ´×À¾Í²Í'),(5,'Í£ÓÃ')
+
 ###################################################
 #5.ordertable TABLE
 
@@ -52,6 +54,7 @@ CREATE TABLE `orderdb`.`ordertable` (
   `orderdatetime` DATETIME NULL,
   `orderstateid` INT NULL,
   PRIMARY KEY (`idordertable`));
+  
 ###################################################
 #6.waiter TABLE
 
@@ -101,6 +104,7 @@ VALUES	(1,'Á¹²Ë'),
 		(6,'»ð¹ø'),
 		(7,'ÉÕ¿¾'),
 		(8,'Ð¡³Ô')
+		
 ###################################################
 #10.winewater TABLE
 
@@ -113,3 +117,100 @@ CREATE TABLE `orderdb`.`winewater` (
 
 
 ###################################################
+#11.dinningtable TABLE
+
+CREATE TABLE `orderdb`.`dinningtable` (
+  `idtable` INT NOT NULL AUTO_INCREMENT,
+  `tableno` VARCHAR(100) NULL,
+  `servicecount` INT NULL,
+  `tablestateid` INT NULL,
+  PRIMARY KEY (`idtable`));
+
+
+###################################################
+#12.flowrecord TABLE 
+
+CREATE TABLE `orderdb`.`flowrecord` (
+  `idflowrecord` INT NOT NULL AUTO_INCREMENT,
+  `tableid` INT NULL,
+  `businessdate` DATETIME NULL,
+  PRIMARY KEY (`idflowrecord`));
+  
+###################################################
+#13.flowattach TABLE
+
+CREATE TABLE `orderdb`.`flowattach` (
+  `idflowattach` INT NOT NULL AUTO_INCREMENT,
+  `flowrecordid` INT NULL,
+  `startdatetime` DATETIME NULL,
+  `enddatetime` DATETIME NULL,
+  `waiterid` INT NULL,
+  `dinnerstateid` INT NULL,
+  PRIMARY KEY (`idflowattach`));
+  
+###################################################
+#14.ordermenuindex TABLE
+
+CREATE TABLE `orderdb`.`ordermenuindex` (
+  `idorderindex` INT NOT NULL AUTO_INCREMENT,
+  `flowrecordid` INT NULL,
+  `totaldish` INT NULL,
+  `totalcash` DECIMAL NULL,
+  `paycash` DECIMAL NULL,
+  PRIMARY KEY (`idorderindex`));
+ 
+###################################################
+#15. ordermenudetails TABLE
+
+CREATE TABLE `orderdb`.`ordermenudetails` (
+  `idorderdetails` INT NOT NULL AUTO_INCREMENT,
+  `orderindexid` INT NULL,
+  `goodsbaseid` INT NULL,
+  `currentprice` DECIMAL NULL,
+  PRIMARY KEY (`idorderdetails`));
+  
+###################################################
+#16.operator TABLE
+
+CREATE TABLE `orderdb`.`operator` (
+  `idoperator` INT NOT NULL AUTO_INCREMENT,
+  `fullname` VARCHAR(200) NULL,
+  `username` VARCHAR(100) NULL,
+  `password` VARCHAR(200) NULL,
+  `roleid` INT NULL,
+  PRIMARY KEY (`idoperator`));
+
+###################################################
+#17.ROLE TABLE
+
+CREATE TABLE `orderdb`.`role` (
+  `idrole` INT NOT NULL AUTO_INCREMENT,
+  `fullname` VARCHAR(200) NULL,
+  PRIMARY KEY (`idrole`));
+
+###################################################
+#18.rolemenu TABLE
+
+CREATE TABLE `orderdb`.`rolemenu` (
+  `idrolemenu` INT NOT NULL AUTO_INCREMENT,
+  `roleid` INT NULL,
+  `menuid` INT NULL,
+  PRIMARY KEY (`idrolemenu`));
+
+###################################################
+#19.menu TABLE
+
+CREATE TABLE `orderdb`.`menu` (
+  `idmenu` INT NOT NULL AUTO_INCREMENT,
+  `fullname` VARCHAR(200) NULL,
+  PRIMARY KEY (`idmenu`));
+
+###################################################
+#20.operatelog TABLE
+
+CREATE TABLE `orderdb`.`operatelog` (
+  `idoperatelog` INT NOT NULL AUTO_INCREMENT,
+  `operatorid` INT NULL,
+  `operatedatetime` DATETIME NULL,
+  `action` VARCHAR(2000) NULL,
+  PRIMARY KEY (`idoperatelog`));
