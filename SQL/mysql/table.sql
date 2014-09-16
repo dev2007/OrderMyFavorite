@@ -180,6 +180,9 @@ CREATE TABLE `orderdb`.`operator` (
   `roleid` INT NULL,
   PRIMARY KEY (`idoperator`));
 
+INSERT INTO operator(fullname,username,password,roleid)
+VALUES('π‹¿Ì‘±','admin','adminpwd',99999)
+
 ###################################################
 #17.ROLE TABLE
 

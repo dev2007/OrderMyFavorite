@@ -13,7 +13,7 @@
 
 	<servlet>
 		<servlet-name>ValidateLogin</servlet-name>
-		<servlet-class>com.awu.servlet.corpadmin.ValidateLogin</servlet-class>
+		<servlet-class>com.awu.servlet.ValidateLogin</servlet-class>
 	</servlet>
 
 	<servlet-mapping>

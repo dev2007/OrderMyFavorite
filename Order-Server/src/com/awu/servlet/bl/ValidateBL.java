@@ -6,7 +6,10 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ValidateBL implements IValidateBL {	
+import com.awu.db.CValidateDB;
+import com.awu.db.EDBMSG;
+
+public class ValidateBL implements IValidateBL {
 	private String loginOKPage = "CorpLogin2.jsp";
 
 	public ValidateBL() {
@@ -18,15 +21,35 @@ public class ValidateBL implements IValidateBL {
 		String userName = request.getParameter("username");
 		String password = request.getParameter("password");
 
+		response.setContentType("text/html;charset=utf-8");
 		PrintWriter writer = response.getWriter();
-		response.setContentType("text;html;charset=utf-8");
 
 		if (userName.equals("")) {
-			writer.write("�û���Ϊ�գ�");
+			writer.write(CTipFunction.ErrorWithMessage("用户名为空！"));
 		} else if (password.equals("")) {
-			writer.write("����Ϊ�գ�");
+			writer.write(CTipFunction.ErrorWithMessage("密码为空！"));
 		} else {
-			writer.write(CTipFunction.OKWithUrl(loginOKPage));
+			CValidateDB validateDBL = CValidateDB._instance();
+			EDBMSG result = validateDBL.ValidateLogin(userName, password);
+			
+			//check result
+			if (result.equals(EDBMSG.OK))
+				writer.write(CTipFunction.OKWithUrl(loginOKPage));
+			else {
+				String message = "";
+				switch (result) {
+				case FAIL:
+					message = "用户名或密码异常，请重试！";
+					break;
+				case ERROR:
+					message = "系统发生异常，请重试或联系管理员！";
+					break;
+				default:
+					message = "发生异常，请联系管理员！";
+					break;
+				}
+				writer.write(CTipFunction.ErrorWithMessage(message));
+			}
 		}
 	}
 }
