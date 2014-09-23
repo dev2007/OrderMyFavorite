@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.awu.db.CValidateDB;
-import com.awu.db.EDBMSG;
+import com.awu.db.utils.EDBMSG;
 
 public class ValidateBL implements IValidateBL {
-	private String loginOKPage = "CorpLogin2.jsp";
+	private String loginOKPage = "Main.jsp";
 
 	public ValidateBL() {
 	}
@@ -31,11 +31,12 @@ public class ValidateBL implements IValidateBL {
 		} else {
 			CValidateDB validateDBL = CValidateDB._instance();
 			EDBMSG result = validateDBL.ValidateLogin(userName, password);
-			
-			//check result
-			if (result.equals(EDBMSG.OK))
+
+			// check result
+			if (result.equals(EDBMSG.OK)) {
 				writer.write(CTipFunction.OKWithUrl(loginOKPage));
-			else {
+				validateOk(request, userName);
+			} else {
 				String message = "";
 				switch (result) {
 				case FAIL:
@@ -51,5 +52,15 @@ public class ValidateBL implements IValidateBL {
 				writer.write(CTipFunction.ErrorWithMessage(message));
 			}
 		}
+	}
+
+	/**
+	 * set login user's user name.
+	 * 
+	 * @param request
+	 * @param userName
+	 */
+	private void validateOk(HttpServletRequest request, String userName) {
+		request.getSession().setAttribute("username", userName);
 	}
 }

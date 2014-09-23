@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.awu.db.CValidateDB;
-import com.awu.db.EDBMSG;
+import com.awu.db.utils.EDBMSG;
 
 public class CValidateDBTest {
 	private CValidateDB db = null;

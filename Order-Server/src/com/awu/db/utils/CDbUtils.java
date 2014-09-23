@@ -11,7 +11,6 @@ import java.util.Hashtable;
 
 import sun.awt.image.OffScreenImage;
 
-import com.awu.db.CDBInfo;
 import com.mysql.jdbc.PreparedStatement;
 
 /***

@@ -1,4 +1,4 @@
-package com.awu.servlet.corpadmin;
+package com.awu.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,23 +9,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.awu.servlet.bl.IValidateBL;
-import com.awu.servlet.bl.ValidateBL;
+import com.awu.servlet.bl.CMenuPageBL;
+import com.awu.servlet.bl.IMenuPageBL;
 
 /**
- * Servlet implementation class ValidateLogin
+ * Servlet implementation class MenuPage
  */
-@WebServlet("/ValidateLogin")
-public class ValidateLogin extends HttpServlet {
+@WebServlet("/MenuPage")
+public class MenuPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private IValidateBL validateBL;
-    
+       
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ValidateLogin() {
+    public MenuPage() {
         super();
-        validateBL = new ValidateBL();
+        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -39,7 +38,12 @@ public class ValidateLogin extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		validateBL.Validate(request, response);
+		IMenuPageBL menuPageBL = new CMenuPageBL();
+		
+		PrintWriter writer = response.getWriter();
+		String userName = (String)request.getAttribute("username");
+		String menuId =  (String)request.getAttribute("menuid");
+		writer.write(menuPageBL.getMenuData(userName,menuId));
 	}
 
 }

@@ -181,7 +181,7 @@ CREATE TABLE `orderdb`.`operator` (
   PRIMARY KEY (`idoperator`));
 
 INSERT INTO operator(fullname,username,password,roleid)
-VALUES('管理员','admin','adminpwd',99999)
+VALUES('管理员','admin','adminpwd',1)
 
 ###################################################
 #17.ROLE TABLE
@@ -191,22 +191,40 @@ CREATE TABLE `orderdb`.`role` (
   `fullname` VARCHAR(200) NULL,
   PRIMARY KEY (`idrole`));
 
+
+INSERT INTO role(fullname)
+VALUES('管理员')
+
 ###################################################
-#18.rolemenu TABLE
+#18.menu TABLE
+
+CREATE TABLE `orderdb`.`menu` (
+  `idmenu` INT NOT NULL AUTO_INCREMENT,
+  `fullname` VARCHAR(200) NULL,
+  `nodevalue` INT NULL,
+  `parentvalue` INT NULL,
+  PRIMARY KEY (`idmenu`));
+
+
+INSERT INTO menu(fullname,nodevalue,parentvalue)
+VALUES ('菜品管理',1,0),
+		('人员管理',2,0),
+		('权限管理',3,0),
+		('报表',4,0),
+		('权限组',31,3)
+		
+###################################################
+#19.rolemenu TABLE
 
 CREATE TABLE `orderdb`.`rolemenu` (
   `idrolemenu` INT NOT NULL AUTO_INCREMENT,
   `roleid` INT NULL,
   `menuid` INT NULL,
   PRIMARY KEY (`idrolemenu`));
-
-###################################################
-#19.menu TABLE
-
-CREATE TABLE `orderdb`.`menu` (
-  `idmenu` INT NOT NULL AUTO_INCREMENT,
-  `fullname` VARCHAR(200) NULL,
-  PRIMARY KEY (`idmenu`));
+  
+INSERT INTO rolemenu(roleid,menuid)
+SELECT 1,idmenu
+FROM menu
 
 ###################################################
 #20.operatelog TABLE

@@ -4,11 +4,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import com.awu.db.utils.CDbUtils;
+import com.awu.db.utils.EDBMSG;
 
-public class CValidateDB {
+public class CValidateDB extends CCommonDB{
 	private static CValidateDB dbl = null;
-	private CDbUtils dbUtils = null;
 	
 	/***
 	 * CValidateDb singleton
@@ -22,7 +21,6 @@ public class CValidateDB {
 	}
 	
 	private CValidateDB(){
-		dbUtils = new CDbUtils();
 	}
 	
 	/***
