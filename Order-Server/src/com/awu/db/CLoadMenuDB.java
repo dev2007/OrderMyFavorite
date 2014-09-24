@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import com.awu.db.entity.CDataRow;
+import com.awu.db.entity.CDataTable;
 import com.awu.entity.CMenu;
 import com.awu.entity.CMenuArray;
 
@@ -44,11 +46,11 @@ public class CLoadMenuDB extends CCommonDB{
 		try {
 
 			
-			ArrayList<Hashtable<String, Object>> dt = dbUtils.executeQuery(sql, params);
+			CDataTable dt = dbUtils.executeQuery(sql, params);
 			for (int i = 0; i < dt.size(); i++) {
-				Hashtable<String, Object> row = dt.get(i);
+				CDataRow row = dt.getRow(i);
 				
-				CMenu menu = new CMenu((String)row.get("idmenu"), (String)row.get("parentvalue"), (String)row.get("fullname"));
+				CMenu menu = new CMenu((String)row.value("idmenu"), (String)row.value("parentvalue"), (String)row.value("fullname"));
 				menuArray.append(menu);
 			}
 		} catch (SQLException e) {
