@@ -12,15 +12,32 @@
     <servlet-class>com.awu.servlet.ValidateLogin</servlet-class>
   </servlet>
   <servlet>
+      <servlet-name>MenuTreeData</servlet-name>
+      <servlet-class>com.awu.servlet.LoadMenu</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>MenuPageContent</servlet-name>
     <servlet-class>com.awu.servlet.MenuPage</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>Logout</servlet-name>
+    <servlet-class>com.awu.servlet.Logout</servlet-class>
+  </servlet>
+  
   <servlet-mapping>
     <servlet-name>ValidateLogin</servlet-name>
     <url-pattern>/Validate</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-      <servlet-name>MenuPageContent</servlet-name>
-      <url-pattern>/Menu</url-pattern>
+      <servlet-name>MenuTreeData</servlet-name>
+      <url-pattern>/MenuData</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>MenuPageContent</servlet-name>
+    <url-pattern>/Menu</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Logout</servlet-name>
+    <url-pattern>/Logout</url-pattern>
   </servlet-mapping>
 </web-app>

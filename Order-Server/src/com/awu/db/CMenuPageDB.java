@@ -1,10 +1,6 @@
 package com.awu.db;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Hashtable;
-
-import javax.xml.crypto.Data;
 
 import com.awu.db.entity.CDataRow;
 
@@ -19,6 +15,7 @@ public class CMenuPageDB extends CCommonDB{
 	}
 	
 	private CMenuPageDB(){
+		super();
 	}
 	
 	public Boolean validateOperatorLimit(String userName,String menuId){
@@ -27,7 +24,8 @@ public class CMenuPageDB extends CCommonDB{
 		params.add(menuId);
 		CDataRow row = new CDataRow();
 		try {
-			row = dbUtils.selectSingleRow("select * from ", params);
+			row = dbUtils.selectSingleRow("select idoperator from operator T1 inner join rolemenu T2 on T1.roleid = T2.roleid "
+					+ "where T1.username = ? and T2.menuid = ?", params);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

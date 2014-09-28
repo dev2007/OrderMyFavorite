@@ -1,14 +1,38 @@
 package com.awu.servlet.bl;
 
-public class CMenuPageBL implements IMenuPageBL{
+import java.io.IOException;
+import java.io.PrintWriter;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.awu.db.CMenuPageDB;
+import com.awu.utils.CommonStr;
+
+public class CMenuPageBL implements IMenuPageBL{
+	private CMenuPageDB dbl = null;
+	
+	public CMenuPageBL(){
+		dbl = CMenuPageDB._instance();
+	}
+	
 	@Override
-	public String getMenuData(String username, String menuid) {
-		//if not has this limit,return empty.
-		if(!validateLimit(username, menuid))
-			return "";
+	public void getMenuData(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		response.setContentType(CommonStr.HTML_UTF8);
+		PrintWriter writer = response.getWriter();
+		String userName = (String)request.getSession().getAttribute("username");
+		String menuId =  (String)request.getParameter("menuid");
 		
-		return "need reliazed";
+		if(null == userName){
+			writer.write("<script type='text/javascript'>alert('登录已失效，请重新登录')</script>");
+			return;
+		}
+		
+		//if not has this limit,return empty.
+		if(!validateLimit(userName, menuId))
+			writer.write("<script type='text/javascript'>alert('你无相应权限')</script>");
+		else
+			writer.write("need reliazed");
 	}
 	
 	/**
@@ -17,8 +41,8 @@ public class CMenuPageBL implements IMenuPageBL{
 	 * @param menuid
 	 * @return if not has this limit,return false,else return true.
 	 */
-	private Boolean validateLimit(String username,String menuid){
-		return false;
+	private Boolean validateLimit(String userName,String menuId){
+		return dbl.validateOperatorLimit(userName, menuId);
 	}
 
 }

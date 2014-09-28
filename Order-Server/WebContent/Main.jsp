@@ -7,123 +7,92 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>管理页</title>
-<script type="text/javascript" src="jquery-easyui-1.4/jquery.min.js"></script>
-<script type="text/javascript"
-	src="jquery-easyui-1.4/jquery.easyui.min.js"></script>
 <link rel="stylesheet" type="text/css"
-	href="jquery-easyui-1.4/themes/default/easyui.css">
-<link rel="stylesheet" type="text/css"
-	href="jquery-easyui-1.4/themes/icon.css">
+	href="ext-4.2.1/resources/css/ext-all.css" />
+<script type="text/javascript" src="ext-4.2.1/ext-all.js"></script>
+<script type="text/javascript" src="ext-4.2.1/ext-lang-zh_CN.js"></script>
 <script type="text/javascript">
-function convert(rows){
-	function exists(rows, parentId){
-		for(var i=0; i<rows.length; i++){
-			if (rows[i].id == parentId) return true;
-		}
-		return false;
-	}
-	
-	var nodes = [];
-	// get the top level nodes
-	for(var i=0; i<rows.length; i++){
-		var row = rows[i];
-		if (!exists(rows, row.parentId)){
-			nodes.push({
-				id:row.id,
-				text:row.name
-			});
-		}
-	}
-	
-	var toDo = [];
-	for(var i=0; i<nodes.length; i++){
-		toDo.push(nodes[i]);
-	}
-	while(toDo.length){
-		var node = toDo.shift();	// the parent node
-		// get the children nodes
-		for(var i=0; i<rows.length; i++){
-			var row = rows[i];
-			if (row.parentId == node.id){
-				var child = {id:row.id,text:row.name};
-				if (node.children){
-					node.children.push(child);
-				} else {
-					node.children = [child];
-				}
-				toDo.push(child);
-			}
-		}
-	}
-	return nodes;
-}
-
-$(function(){
-	$('#tt').tree({
-		onClick:function(node){
-			alert(node.text);
-			htmlobj=$.ajax({
-			type:'POST',
-			url:'Menu',
-			data:{
-				username:
-				<%String userName = (String) session.getAttribute("username");
-						if (null == userName) {
-							out.print("\"\"");
-						}
-						out.print("\""+userName+"\"");
-				%>,
-				menuid:
-					node.id
-			},
-			success:function(data){
-			 	$('#content').html(htmlobj.responseText);
-			},
-			error:function(){			
-			}
-			});
-		}
-	});
-});
-
-<%
-		//validate session
-		String username = (String) session.getAttribute("username");
-		if (null == username) {
-			response.sendRedirect("CorpLogin.jsp");
-		}
-		else{
-			ILoadMenuBL loadMenuBL = new CLoadMenuBL();
-			EDBMSG result = loadMenuBL.loadMenu(request,username);
+	Ext.onReady(function() {
+				//获取菜单数据
+				var store = Ext.create('Ext.data.TreeStore', {
+					id:'tree_store',
+					proxy:{
+						type:'ajax',
+						url:'MenuData',
+						reader:{type:'json'}
+					},
+					autoLoad:true
+				});
 				
-			String js = "$(function(){$('#tt').tree({"
-						+"url: 'menudata/"+username+".json',"
-						+"loadFilter: function(rows){"
-						+"		return convert(rows);"
-						+"	}"
-						+"});"
-						+"});";
-			out.println(js);
-		}
-%>
-	
+
+				//菜单树 
+				var menu_Tree = new Ext.tree.TreePanel({
+					region : 'west',
+					width : 300,
+					title : '菜单',
+					collapsible : true,
+					split : true,
+					//-----
+					containerScroll : true,
+					animate : true,
+					store : store,
+					rootVisible : false,
+					listeners: {
+		                itemclick: function (view, record, item, index, e) {
+		                	if(record.get('leaf')){
+		                		var n = contentPanel.getComponent(record.raw.id);
+		                        if (!n) { // 判断是否已经打开该面板
+		                            n = contentPanel.add({
+		                                'id' : record.raw.id,
+		                                'title' : record.raw.text,
+		                                closable : true,
+		                                autoLoad:{
+		                                	//url:'Menu?menuid='+record.raw.id,//TODO:Tab页面
+		                                	url:'Operator.jsp',
+		                                	scripts:true}
+		                            });
+		                        }
+		                        contentPanel.setActiveTab(n);
+		                	}else{
+		                		alert("not leaf");
+		                	}
+		                }
+		            }
+
+				});
+
+				//功能区
+				var contentPanel = new Ext.TabPanel(
+						{
+							region : 'center',
+							enableTabScroll : true,
+							activeTab : 0,
+							items : [ {
+								id : 'homePage',
+								title : '首页',
+								autoScroll : true,
+								html : '<div style="position:absolute;color:#ff0000;top:40%;left:40%;">欢迎登录综合管理系统</div>'
+							} ]
+						});
+							
+				//布局
+				new Ext.Viewport({
+					title : "Viewport",
+					layout : "border",
+					defaults : {
+						bodyStyle : "background-color: #FFFFFF;",
+						frame : true
+					},
+					items : [ menu_Tree, {
+						region : "north",
+						title : '综合管理系统',
+						collapsible : false
+					}, contentPanel ]
+				});
+
+			});
 </script>
 </head>
 <body>
-	<h2>管理系统</h2>
-	<p>
-		欢迎你，<%
-		out.print(session.getAttribute("username"));
-	%>
-	</p>
-	<div id="grid" class="easyui-layout" style="width: 98%; height: 600px;">
-		<div data-options="region:'west',split:true" title="菜单"
-			style="width: 300px;">
-			<ul id="tt"></ul>
-		</div>
-		<div id="content" region="center" title="功能区" style="padding: 5px;">
-			<table id="dg"></table>
-		</div>
-	</div>
 </body>
 </html>

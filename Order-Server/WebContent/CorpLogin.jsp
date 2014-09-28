@@ -6,79 +6,94 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>系统登录</title>
 </head>
-<script type="text/javascript" src="jquery-easyui-1.4/jquery.min.js"></script>
-<script type="text/javascript"
-	src="jquery-easyui-1.4/jquery.easyui.min.js"></script>
 <link rel="stylesheet" type="text/css"
-	href="jquery-easyui-1.4/themes/default/easyui.css">
-<link rel="stylesheet" type="text/css"
-	href="jquery-easyui-1.4/themes/icon.css">
+	href="ext-4.2.1/resources/css/ext-all.css" />
+<script type="text/javascript" src="ext-4.2.1/ext-all.js"></script>
+<script type="text/javascript" src="ext-4.2.1/ext-lang-zh_CN.js"></script>
 <script type="text/javascript">
-	//real login function
-	function login() {
-		var user = $('#txtUserName');
-		var pwd = $('#txtPassword');
-
-		if (user.val() == "") {
-			alert("请输入用户名！");
-			user.focus();
-			return false;
-		} else if (pwd.val() == "") {
-			alert("请输入密码！");
-			pwd.focus();
-			return false;
-		} else {
-			$.post("Validate", {
-				username : user.val(),
-				password : pwd.val()
-			}, function(data, status) {
-				if (status == "success") {
-					var infoArray = data.split(";");
-					if (infoArray.length == 1) {
-						if (infoArray[0] == "OK") {
-							alert("请求成功！");
-						} else if (infoArray[0] == "ERROR") {
-							alert("请求失败！");
-						}
-					} else if (infoArray.length == 3) {
-						if (infoArray[1] == "MSG") {
-							alert(infoArray[2]);
-						} else if (infoArray[1] == "URL") {
-							self.location = infoArray[2];
-						}
-					}
-				} else {
-					alert("请重试！");
-				}
-			});
+	Ext.onReady(function() {
+		//初始化标签中的Ext:Qtip属性。
+		Ext.QuickTips.init();
+		Ext.form.Field.prototype.msgTarget = 'side';
+		//登录
+		var btnsubmitclick = function() {
+			if (form.getForm().isValid()) {
+				form.getForm().submit({
+					watiMsg:'登录中，请稍候',
+                    success: function(form, action) {
+						Ext.Msg.alert('提示',action.result.msg,function(){location.href = "Main.jsp";});
+                    },
+                    failure: function(form, action) {
+                        Ext.Msg.alert('提示', action.result.msg);
+                    }
+                });
+			}
 		}
-
-	}
-	//click for login
-	$(function() {
-		$('#btnLogin').click(function() {
-			login();
-			return false;
+		//重置按钮"点击时"处理方法
+		var btnresetclick = function() {
+			Ext.MessageBox.alert('提示', '你点了重置按钮!');
+		}
+		//提交按钮
+		var btnsubmit = new Ext.Button({
+			text : '登录',
+			handler : btnsubmitclick
 		});
-	})
-</script>
-<body>
+		//重置按钮
+		var btnreset = new Ext.Button({
+			text : '重置',
+			listeners : {
+				'click' : btnresetclick
+			}
+		});
 
-	<div id="win" class="easyui-window" title="登录"
-		style="width: 400px; height: 180px;">
-		<form style="padding: 10px 20px 10px 40px;">
-			<input class="easyui-textbox" data-options="iconCls:'icon-man'"
-				style="width: 300px; height: 30px" id="txtUserName">
-			<p />
-			<input class="easyui-textbox" type="password"
-				data-options="iconCls:'icon-lock'"
-				style="width: 300px; height: 30px" id="txtPassword">
-			<div style="padding: 5px; text-align: center;">
-				<a href="#" class="easyui-linkbutton" icon="icon-ok" id="btnLogin">登录</a>
-				<a href="#" class="easyui-linkbutton" icon="icon-cancel">取消</a>
-			</div>
-		</form>
-	</div>
+		//用户名input
+		var txtusername = new Ext.form.TextField({
+			width : 300,
+			allowBlank : false,
+			maxLength : 20,
+			name : 'username',
+			fieldLabel : '用户名称',
+			blankText : '请输入用户名称',
+			maxLengthText : '用户名称不能超过20个字符'
+		});
+		//密码input
+		var txtpassword = new Ext.form.TextField({
+			width : 300,
+			allowBlank : false,
+			maxLength : 20,
+			inputType : 'password',
+			name : 'password',
+			fieldLabel : '登录密码',
+			blankText : '请输入密码',
+			maxLengthText : '密码不能超过20个字符'
+		});
+
+		var form = new Ext.form.FormPanel({
+			url:'Validate',
+			frame : true,
+			style : 'margin:10px',
+			labelAlign : 'right',
+			labelWidth : 45,
+			buttonAlign : 'center',
+			bodyStyle : 'padding:6px 0px 0px 15px',
+			items : [ txtusername, txtpassword ],
+			buttons : [ btnsubmit, btnreset ]
+		});
+
+		var win = new Ext.Window({
+			title : '系统登录',
+			width : 476,
+			height : 174,
+			modal : true,
+			cloasable : false,
+			resizable : false,
+			maximizable : false,
+			minimizable : false,
+			items : form
+		});
+		win.show();
+	});
+</script>
 
 
 </body>

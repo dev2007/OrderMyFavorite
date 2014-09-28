@@ -22,6 +22,7 @@ public class CValidateDB extends CCommonDB{
 	}
 	
 	private CValidateDB(){
+		super();
 	}
 	
 	/***

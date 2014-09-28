@@ -1,6 +1,7 @@
 package com.awu.servlet.bl;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.awu.db.utils.EDBMSG;
 
@@ -10,5 +11,5 @@ import com.awu.db.utils.EDBMSG;
  *
  */
 public interface ILoadMenuBL {
-	EDBMSG loadMenu(HttpServletRequest request,String userName);
+	void loadMenu(HttpServletRequest request,HttpServletResponse response);
 }

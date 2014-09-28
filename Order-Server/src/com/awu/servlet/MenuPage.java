@@ -18,32 +18,28 @@ import com.awu.servlet.bl.IMenuPageBL;
 @WebServlet("/MenuPage")
 public class MenuPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+	IMenuPageBL menuPageBL = null;
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
     public MenuPage() {
         super();
-        // TODO Auto-generated constructor stub
+        menuPageBL = new CMenuPageBL(); 
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		menuPageBL.getMenuData(request, response);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		IMenuPageBL menuPageBL = new CMenuPageBL();
-		
-		PrintWriter writer = response.getWriter();
-		String userName = (String)request.getAttribute("username");
-		String menuId =  (String)request.getAttribute("menuid");
-		writer.write(menuPageBL.getMenuData(userName,menuId));
+		doGet(request, response);
 	}
 
 }

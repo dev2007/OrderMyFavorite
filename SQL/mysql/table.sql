@@ -203,15 +203,16 @@ CREATE TABLE `orderdb`.`menu` (
   `fullname` VARCHAR(200) NULL,
   `nodevalue` INT NULL,
   `parentvalue` INT NULL,
+  `haschild` INT NULL DEFAULT 0
   PRIMARY KEY (`idmenu`));
 
 
 INSERT INTO menu(fullname,nodevalue,parentvalue)
-VALUES ('菜品管理',1,0),
-		('人员管理',2,0),
-		('权限管理',3,0),
-		('报表',4,0),
-		('权限组',31,3)
+VALUES ('菜品管理',1,0,0),
+		('人员管理',2,0,0),
+		('权限管理',3,0,1),
+		('报表',4,0,0),
+		('权限组',31,3,0)
 		
 ###################################################
 #19.rolemenu TABLE

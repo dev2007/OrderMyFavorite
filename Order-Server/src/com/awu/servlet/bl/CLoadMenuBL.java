@@ -1,17 +1,16 @@
 package com.awu.servlet.bl;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.awu.db.CLoadMenuDB;
-import com.awu.db.utils.EDBMSG;
+import com.awu.utils.CommonStr;
 
 public class CLoadMenuBL implements ILoadMenuBL {
 	private CLoadMenuDB loadMenuDB;
-	private final String FILE_EXTEND = ".json";
 	
 	public CLoadMenuBL(){
 		this.loadMenuDB = CLoadMenuDB._instance();
@@ -19,28 +18,28 @@ public class CLoadMenuBL implements ILoadMenuBL {
 	
 	/**
 	 * Load user's menu.
-	 * Save menu data in a file in the folder "menudata".
-	 * If save success,return OK,else return ERROR.
 	 */
 	@Override
-	public EDBMSG loadMenu(HttpServletRequest request,String userName) {
-		String jsonString = loadMenuDB.getUserMenu(userName).toJson();
-		String realPath = request.getRealPath("menudata");
-		String path = realPath +"/" +userName + FILE_EXTEND;
-		File file = new File(path);
-		if(file.exists()){
-			file.delete();
+	public void loadMenu(HttpServletRequest request,HttpServletResponse response) {
+		Object valueObject = request.getSession().getAttribute(CommonStr.SESSION_USERNAME);
+		String userName = "";
+		String jsonString = "";
+		if(null != valueObject){
+			userName = (String)valueObject;
+			jsonString = loadMenuDB.getUserExtMenu(userName).toJson();
+//			jsonString =  " [ {id:'detention',text : 'detention',leaf : true,children:[]}]";
 		}
+		
+		response.setContentType(CommonStr.HTML_UTF8);
+		
 		try {
-			file.createNewFile();
-			FileWriter writer = new FileWriter(file);
+			PrintWriter writer = response.getWriter();
 			writer.write(jsonString);
-			writer.flush();
-			writer.close();
 		} catch (IOException e) {
-			return EDBMSG.ERROR;
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return EDBMSG.OK;
+
 	}
 
 }

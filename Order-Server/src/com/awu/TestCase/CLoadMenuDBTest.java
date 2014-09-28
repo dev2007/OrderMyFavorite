@@ -1,12 +1,11 @@
 package com.awu.TestCase;
 
-import static org.junit.Assert.*;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.awu.db.CLoadMenuDB;
+import com.awu.entity.CExtJsMenuRoot;
 import com.awu.entity.CMenuArray;
 
 public class CLoadMenuDBTest {
@@ -24,6 +23,12 @@ public class CLoadMenuDBTest {
 	public void testGetUserMenu() {
 		CMenuArray array = db.getUserMenu("admin");
 		System.out.println(array.toJson());
+	}
+	
+	@Test
+	public void testGetUserExtMenu(){
+		CExtJsMenuRoot root = db.getUserExtMenu("admin");
+		System.out.println(root.toJson());
 	}
 
 }

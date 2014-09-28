@@ -6,75 +6,35 @@ package com.awu.servlet.bl;
  *
  */
 public class CTipFunction {
-	/***
-	 * error message format head
+	/**
+	 * Form response json string format for success.
 	 */
-	private final static String ERRORFLAG = "ERROR";
+	private static final String SUCCESSFORMAT_STR = "{success:true,msg:'%s'}";
 	
-	/***
-	 * true message format head
+	/**
+	 * Form response json string format for fail.
 	 */
-	private final static String OKFLAG = "OK";
+	private static final String FAILFORMAT_STR = "{success:false,msg:'%s'}";
 	
 	public CTipFunction(){
 		
 	}
 	
-	/***
-	 * Get Error message with tip message
-	 * the format is : ERROR;MSG;you get a error
+	/**
+	 * Get success response string.
 	 * @param msg
 	 * @return
 	 */
-	public static String ErrorWithMessage(String msg){
-		return String.format("%s;MSG;%s", ERRORFLAG,msg);
+	public static String success(String msg){
+		return String.format(SUCCESSFORMAT_STR, msg);
 	}
 	
-	/***
-	 * Get Error message with url
-	 * the format is : ERROR;URL;http://xxx.com
-	 * @param url
-	 * @return
-	 */
-	public static String ErrorWithUrl(String url){
-		return String.format("%s;URL;%s", ERRORFLAG,url);
-	}
-	
-	/***
-	 * Get Error message
-	 * the format is : ERROR
-	 * @return
-	 */
-	public static String Error(){
-		return ERRORFLAG;
-	}
-	
-	/***
-	 * Get Ok message
-	 * the format is :OK
-	 * @return
-	 */
-	public static String OK(){
-		return OKFLAG;
-	}
-	
-	/***
-	 * Get OK message with tip message
-	 * the format is : OK;MSG;you are ok
+	/**
+	 * Get fail response string.
 	 * @param msg
 	 * @return
 	 */
-	public static String OKWithMessage(String msg){
-		return String.format("%s;MSG;%s", OKFLAG,msg);
-	}
-	
-	/***
-	 * Get Ok message with url
-	 * the format is : OK;URL;http:xxx.com
-	 * @param url
-	 * @return
-	 */
-	public static String OKWithUrl(String url){
-		return String.format("%s;URL;%s", OKFLAG,url);
+	public static String fail(String msg){
+		return String.format(FAILFORMAT_STR,msg);
 	}
 }

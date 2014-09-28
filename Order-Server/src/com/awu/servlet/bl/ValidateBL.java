@@ -8,10 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.awu.db.CValidateDB;
 import com.awu.db.utils.EDBMSG;
+import com.awu.utils.CommonStr;
 
 public class ValidateBL implements IValidateBL {
-	private String loginOKPage = "Main.jsp";
-
 	public ValidateBL() {
 	}
 
@@ -21,20 +20,20 @@ public class ValidateBL implements IValidateBL {
 		String userName = request.getParameter("username");
 		String password = request.getParameter("password");
 
-		response.setContentType("text/html;charset=utf-8");
+		response.setContentType(CommonStr.HTML_UTF8);
 		PrintWriter writer = response.getWriter();
 
 		if (userName.equals("")) {
-			writer.write(CTipFunction.ErrorWithMessage("用户名为空！"));
+			writer.write(CTipFunction.fail("用户名为空！"));
 		} else if (password.equals("")) {
-			writer.write(CTipFunction.ErrorWithMessage("密码为空！"));
+			writer.write(CTipFunction.fail("密码为空！"));
 		} else {
 			CValidateDB validateDBL = CValidateDB._instance();
 			EDBMSG result = validateDBL.ValidateLogin(userName, password);
 
 			// check result
 			if (result.equals(EDBMSG.OK)) {
-				writer.write(CTipFunction.OKWithUrl(loginOKPage));
+				writer.write(CTipFunction.success("登录成功"));
 				validateOk(request, userName);
 			} else {
 				String message = "";
@@ -49,7 +48,7 @@ public class ValidateBL implements IValidateBL {
 					message = "发生异常，请联系管理员！";
 					break;
 				}
-				writer.write(CTipFunction.ErrorWithMessage(message));
+				writer.write(CTipFunction.fail(message));
 			}
 		}
 	}
@@ -61,6 +60,6 @@ public class ValidateBL implements IValidateBL {
 	 * @param userName
 	 */
 	private void validateOk(HttpServletRequest request, String userName) {
-		request.getSession().setAttribute("username", userName);
+		request.getSession().setAttribute(CommonStr.SESSION_USERNAME, userName);
 	}
 }
