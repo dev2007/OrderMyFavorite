@@ -6,8 +6,10 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.awu.app.CApp;
 import com.awu.db.CMenuPageDB;
 import com.awu.utils.CommonStr;
+import com.awu.utils.ScriptAlertStr;
 
 public class CMenuPageBL implements IMenuPageBL{
 	private CMenuPageDB dbl = null;
@@ -27,12 +29,12 @@ public class CMenuPageBL implements IMenuPageBL{
 			writer.write("<script type='text/javascript'>alert('登录已失效，请重新登录')</script>");
 			return;
 		}
-		
+
 		//if not has this limit,return empty.
 		if(!validateLimit(userName, menuId))
-			writer.write("<script type='text/javascript'>alert('你无相应权限')</script>");
+			writer.write(ScriptAlertStr.NOLIMIT);
 		else
-			writer.write("need reliazed");
+			writer.write(CApp.getMenuPageContent(request,menuId));
 	}
 	
 	/**

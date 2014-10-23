@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="com.awu.servlet.bl.*"%>
-<%@ page import="com.awu.db.utils.EDBMSG"%>
+<%@ page import="com.awu.app.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -24,7 +23,8 @@
 					autoLoad:true
 				});
 				
-
+				var url = "";
+				
 				//菜单树 
 				var menu_Tree = new Ext.tree.TreePanel({
 					region : 'west',
@@ -47,8 +47,7 @@
 		                                'title' : record.raw.text,
 		                                closable : true,
 		                                autoLoad:{
-		                                	//url:'Menu?menuid='+record.raw.id,//TODO:Tab页面
-		                                	url:'Operator.jsp',
+		                                	url:'Menu?menuid='+record.raw.id,//TODO:Tab页面
 		                                	scripts:true}
 		                            });
 		                        }

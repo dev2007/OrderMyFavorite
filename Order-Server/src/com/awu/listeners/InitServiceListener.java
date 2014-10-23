@@ -17,12 +17,13 @@ import com.awu.services.CTabletService;
  */
 @WebListener
 public class InitServiceListener implements ServletContextListener {
-
+    private ServicesEndpointManager servicesEndpointManager;
+    
     /**
      * Default constructor. 
      */
     public InitServiceListener() {
-        // TODO Auto-generated constructor stub
+    	servicesEndpointManager = new ServicesEndpointManager();
     }
 
 	/**
@@ -45,7 +46,6 @@ public class InitServiceListener implements ServletContextListener {
      */
     private void InitServices(){
         System.out.println("init services start");
-        ServicesEndpointManager servicesEndpointManager = new ServicesEndpointManager();
         servicesEndpointManager.AddService(new CTabletService());
         servicesEndpointManager.Pusblish();
     }
