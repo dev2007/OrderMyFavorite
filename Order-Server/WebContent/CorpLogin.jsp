@@ -69,7 +69,7 @@
 		});
 
 		var form = new Ext.form.FormPanel({
-			url:'Validate',
+			url:'validate',
 			frame : true,
 			style : 'margin:10px',
 			labelAlign : 'right',

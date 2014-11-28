@@ -17,28 +17,27 @@ import com.awu.servlet.bl.ILoadMenuBL;
 @WebServlet("/LoadMenu")
 public class LoadMenu extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private ILoadMenuBL loadMenuBL = null;
-    
+    private ILoadMenuBL bl = null;   
     /**
      * @see HttpServlet#HttpServlet()
      */
     public LoadMenu() {
         super();
-        loadMenuBL = new CLoadMenuBL();
+        bl = new CLoadMenuBL();
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		loadMenuBL.loadMenu(request, response);
+		bl.loadMenu(request, response);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+		// TODO Auto-generated method stub
 	}
 
 }

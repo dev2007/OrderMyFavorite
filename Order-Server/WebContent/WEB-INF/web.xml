@@ -7,25 +7,22 @@
   <listener>
     <listener-class>com.awu.listeners.InitServiceListener</listener-class>
   </listener>
-  <!--Login -->
   <servlet>
     <servlet-name>ValidateLogin</servlet-name>
     <servlet-class>com.awu.servlet.ValidateLogin</servlet-class>
   </servlet>
-    <servlet-mapping>
+  <servlet-mapping>
     <servlet-name>ValidateLogin</servlet-name>
     <url-pattern>/validate</url-pattern>
   </servlet-mapping>
-  <!-- Get User's Menu -->
   <servlet>
     <servlet-name>MenuTreeData</servlet-name>
     <servlet-class>com.awu.servlet.LoadMenu</servlet-class>
   </servlet>
-    <servlet-mapping>
+  <servlet-mapping>
     <servlet-name>MenuTreeData</servlet-name>
     <url-pattern>/loadmenu</url-pattern>
   </servlet-mapping>
-  <!-- Logout -->
   <servlet>
     <servlet-name>Logout</servlet-name>
     <servlet-class>com.awu.servlet.Logout</servlet-class>
@@ -34,13 +31,12 @@
     <servlet-name>Logout</servlet-name>
     <url-pattern>/logout</url-pattern>
   </servlet-mapping>
-  <!-- Operator data operation -->
   <servlet>
-      <servlet-name>OperatorIo</servlet-name>
-      <servlet-class>com.awu.servlet.OperatorIO</servlet-class>
+    <servlet-name>OperatorIo</servlet-name>
+    <servlet-class>com.awu.servlet.OperatorIO</servlet-class>
   </servlet>
   <servlet-mapping>
-      <servlet-name>OperatorIo</servlet-name>
-      <url-pattern>/operator</url-pattern>
+    <servlet-name>OperatorIo</servlet-name>
+    <url-pattern>/operator</url-pattern>
   </servlet-mapping>
 </web-app>

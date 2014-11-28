@@ -2,6 +2,8 @@ package com.awu.db.entity;
 
 import java.util.ArrayList;
 
+import com.google.gson.Gson;
+
 /**
  * CDataTable class.
  * A container for contain CDataRow objects.
@@ -56,5 +58,35 @@ public class CDataTable {
 			return new CDataRow();
 		
 		return _rowList.get(index);
+	}
+	
+	/**
+	 * Convert this object to json string.
+	 * @return
+	 */
+	public String toJson(){
+		Gson gson = new Gson();
+		return removeRowHeader(gson.toJson(this));
+	}
+	
+	/**
+	 * Convert this object to json string.
+	 * At the same time,use specify header name.
+	 * @param jsonHeader json's specified name.
+	 * @return
+	 */
+	public String toJson(String jsonHeader){
+		Gson gson = new Gson();
+		String json = gson.toJson(this);
+		json = json.replace("_rowList", jsonHeader);
+		json = removeRowHeader(json);
+		return json;
+	}
+	
+	private String removeRowHeader(String json){
+		json = json.replace("{\"_data\":", "");
+		json = json.replace("},", ",");
+		json = json.replace("}]", "]");
+		return json;
 	}
 }
