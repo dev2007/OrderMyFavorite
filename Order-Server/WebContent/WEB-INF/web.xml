@@ -27,9 +27,10 @@
     <servlet-class>com.awu.servlet.Logout</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>MenuData</servlet-name>
-    <servlet-class>com.awu.servlet.MenuData</servlet-class>
+      <servlet-name>MenuData</servlet-name>
+      <servlet-class>com.awu.servlet.MenuData</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>ValidateLogin</servlet-name>
     <url-pattern>/Validate</url-pattern>
@@ -47,7 +48,7 @@
     <url-pattern>/Logout</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>MenuData</servlet-name>
-    <url-pattern>/MenuData</url-pattern>
+      <servlet-name>MenuData</servlet-name>
+      <url-pattern>/MenuData</url-pattern>
   </servlet-mapping>
 </web-app>

@@ -9,9 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.awu.servlet.bl.CLoadMenuBL;
-import com.awu.servlet.bl.ILoadMenuBL;
-
 /**
  * Servlet implementation class MenuData
  */
@@ -24,18 +21,16 @@ public class MenuData extends HttpServlet {
      */
     public MenuData() {
         super();
+        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		ILoadMenuBL loadMenuBL = new CLoadMenuBL();
-//		loadMenuBL.loadMenu(request, response);
-		
 		PrintWriter writer = response.getWriter();
-				writer.write("{\"data\" : [ {\"fullname\": \"test1\",\"age\" : \"18\",\"sex\" : \"man\",\"phonenumber\" : \"13088888888\"} ]}");
-				System.out.println("menudata");
+		writer.write("{\"data\" : [ {\"fullname\": \"test1\",\"age\" : \"18\",\"sex\" : \"man\",\"phonenumber\" : \"13088888888\"} ]}");
+		System.out.println("menudata");
 	}
 
 	/**
