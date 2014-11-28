@@ -11,6 +11,23 @@
 <script type="text/javascript" src="ext-4.2.1/ext-all.js"></script>
 <script type="text/javascript" src="ext-4.2.1/ext-lang-zh_CN.js"></script>
 <script type="text/javascript">
+	//按菜单结点判断相应的加载页面
+	var id = 0;
+	
+	function Link(){
+		var url = "menupage/";
+		if(id == 1){
+			url += "";
+		}else if(id == 2){
+			url += "operator.jsp";
+		}else if(id == 3){
+			url += "";
+		}else if(id == 4){
+			url += "";
+		}
+		return url;
+	}
+	
 	Ext.onReady(function() {
 				//获取菜单数据
 				var store = Ext.create('Ext.data.TreeStore', {
@@ -23,7 +40,6 @@
 					autoLoad:true
 				});
 				
-				var url = "";
 				
 				//菜单树 
 				var menu_Tree = new Ext.tree.TreePanel({
@@ -40,6 +56,7 @@
 					listeners: {
 		                itemclick: function (view, record, item, index, e) {
 		                	if(record.get('leaf')){
+		                		id = record.raw.id;
 		                		var n = contentPanel.getComponent(record.raw.id);
 		                        if (!n) { // 判断是否已经打开该面板
 		                            n = contentPanel.add({
@@ -47,7 +64,7 @@
 		                                'title' : record.raw.text,
 		                                closable : true,
 		                                autoLoad:{
-		                                	url:'Menu?menuid='+record.raw.id,//TODO:Tab页面
+		                                	url:Link(),//'Menu?menuid='+record.raw.id,//TODO:Tab页面
 		                                	scripts:true}
 		                            });
 		                        }
