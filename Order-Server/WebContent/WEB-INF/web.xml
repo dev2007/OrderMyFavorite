@@ -7,6 +7,7 @@
   <listener>
     <listener-class>com.awu.listeners.InitServiceListener</listener-class>
   </listener>
+  <!-- Login -->
   <servlet>
     <servlet-name>ValidateLogin</servlet-name>
     <servlet-class>com.awu.servlet.ValidateLogin</servlet-class>
@@ -15,6 +16,7 @@
     <servlet-name>ValidateLogin</servlet-name>
     <url-pattern>/validate</url-pattern>
   </servlet-mapping>
+  <!-- MenuList -->
   <servlet>
     <servlet-name>MenuTreeData</servlet-name>
     <servlet-class>com.awu.servlet.LoadMenu</servlet-class>
@@ -23,6 +25,7 @@
     <servlet-name>MenuTreeData</servlet-name>
     <url-pattern>/loadmenu</url-pattern>
   </servlet-mapping>
+  <!-- Logout -->
   <servlet>
     <servlet-name>Logout</servlet-name>
     <servlet-class>com.awu.servlet.Logout</servlet-class>
@@ -31,6 +34,7 @@
     <servlet-name>Logout</servlet-name>
     <url-pattern>/logout</url-pattern>
   </servlet-mapping>
+  <!-- OperaterOP -->
   <servlet>
     <servlet-name>OperatorIo</servlet-name>
     <servlet-class>com.awu.servlet.OperatorIO</servlet-class>

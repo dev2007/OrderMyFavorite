@@ -40,6 +40,8 @@ public class CDataRow {
 	 */
 	public void addColumn(String columnName,Object value) throws Exception{
 		if(_data != null){
+			if(null == value)
+				value = "";
 			_data.put(columnName, value);
 		}else{
 			throw new Exception("This CDataRow object is null.");

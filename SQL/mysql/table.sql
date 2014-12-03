@@ -60,7 +60,7 @@ CREATE TABLE `orderdb`.`ordertable` (
 
 CREATE TABLE `orderdb`.`waiter` (
   `idwaiter` INT NOT NULL AUTO_INCREMENT,
-  `fullname` VARCHAR(45) NULL,
+  `fullname` VARCHAR(100) NULL,
   `age` INT NULL,
   `sex` INT NULL,
   `phonenumber` VARCHAR(100) NULL,
@@ -178,10 +178,11 @@ CREATE TABLE `orderdb`.`operator` (
   `username` VARCHAR(100) NULL,
   `password` VARCHAR(200) NULL,
   `roleid` INT NULL,
+  `waiterid` INT 0,
   PRIMARY KEY (`idoperator`));
 
-INSERT INTO operator(fullname,username,password,roleid)
-VALUES('管理员','admin','adminpwd',1)
+INSERT INTO operator(fullname,username,password,roleid,waiterid)
+VALUES('管理员','admin','adminpwd',1,0)
 
 ###################################################
 #17.ROLE TABLE
@@ -193,7 +194,8 @@ CREATE TABLE `orderdb`.`role` (
 
 
 INSERT INTO role(fullname)
-VALUES('管理员')
+VALUES('管理员'),
+		('服务员')
 
 ###################################################
 #18.menu TABLE

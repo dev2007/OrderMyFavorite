@@ -272,7 +272,7 @@ public class CDbUtils {
 			int columnsCount) throws Exception {
 		CDataRow row = new CDataRow();
 		for (int i = 1; i <= columnsCount; i++) {
-			String name = meta.getColumnName(i);
+			String name = meta.getColumnLabel(i);
 			row.addColumn(name, rSet.getString(name));
 		}
 		return row;

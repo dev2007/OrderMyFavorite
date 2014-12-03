@@ -1,5 +1,6 @@
 package com.awu.db;
 
+import com.awu.db.entity.CDataRow;
 import com.awu.db.entity.CDataTable;
 
 /**
@@ -30,23 +31,46 @@ public class COperatorDB extends CCommonDB {
 	
 	/**
 	 * Get operators datatable by page number and page size number.
-	 * @param pageNum current page number.
+	 * @param page current page number.
 	 * @param pageSize page size number.
 	 * @return CDatatable object.
 	 */
-	public CDataTable getOperatorList(int pageNum,int pageSize){
+	public CDataTable getOperatorList(int page,int pageSize){
 		//prevent data error.
-		if(pageNum <=0)
-			pageNum = 1;
+		if(page <=0)
+			page = 1;
 		if(pageSize <=0)
-			pageSize = 1;
+			pageSize = 25;
 		
-		String sql = String.format("select idoperator,fullname,username from operator limit %d,%d",(pageNum - 1) * pageSize,pageSize);
+		int totalRecord = getTotalRecord();
+		
+		String sql = "select operator.idoperator,operator.roleid,operator.fullname,operator.username,waiter.age,sex.fullname as sex,waiter.phonenumber from operator ";
+		sql += "left join waiter  on operator.waiterid = waiter.idwaiter ";
+		sql += "left join sex on waiter.sex = sex.idsex ";
+		sql += "order by operator.roleid,operator.idoperator ";
+		sql += String.format("limit %d,%d",(page - 1) * pageSize,pageSize);
 		try {
 			CDataTable dt = dbUtils.executeQuery(sql);
+			Boolean flag = dt.setTotalRecord(totalRecord);
+			if(!flag)
+				System.err.println("operator total size less then select size.");
 			return dt;
 		} catch (Exception e) {
 			return new CDataTable();
+		}
+	}
+	
+	private int getTotalRecord(){
+		String sumSql = "select count(operator.idoperator) as total from operator ";
+		sumSql += "left join waiter  on operator.waiterid = waiter.idwaiter ";
+		sumSql += "left join sex on waiter.sex = sex.idsex ";
+		sumSql += "order by operator.roleid,operator.idoperator ";
+		try {
+			CDataRow dr = dbUtils.selectSingleRow(sumSql);
+			return Integer.parseInt((String)dr.value("total"));
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			return 0;
 		}
 	}
 }

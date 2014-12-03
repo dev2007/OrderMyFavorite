@@ -31,7 +31,7 @@ public class OperatorIO extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//just query now,may be has add,modify,delete.
-		bl.getOperatorList(request, response);
+		bl.run(request, response);
 	}
 
 	/**

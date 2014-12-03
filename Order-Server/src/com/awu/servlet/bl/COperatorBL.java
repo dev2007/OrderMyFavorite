@@ -16,11 +16,23 @@ public class COperatorBL {
 		dbl = COperatorDB._instance();
 	}
 	
-	public void getOperatorList(HttpServletRequest request, HttpServletResponse response) throws IOException{
-//		int pageNum = Integer.parseInt(request.getParameter("page") );
-//		int pageSize = Integer.parseInt(request.getParameter("size") );
-		int pageNum = 1;
-		int pageSize = 1;
+	public void run(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		if(null != request.getParameter("type")){
+			String type = (String)request.getParameter("type");
+			switch (type) {
+			case "list":
+				getOperatorList(request, response);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	
+	private void getOperatorList(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		int pageNum = Integer.parseInt(request.getParameter("page") );
+		int pageSize = Integer.parseInt(request.getParameter("limit") );
+
 		response.setContentType(CommonStr.HTML_UTF8);
 		PrintWriter writer = response.getWriter();
 		String json = dbl.getOperatorList(pageNum, pageSize).toJson("users");
