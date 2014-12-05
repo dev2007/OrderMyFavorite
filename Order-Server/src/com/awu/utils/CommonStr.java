@@ -15,9 +15,4 @@ public class CommonStr {
 	 * Html utf8 encode string. 
 	 */
 	public static final String HTML_UTF8 = "text/html;charset=utf-8";
-	
-	/**
-	 * menu html files folder.
-	 */
-	public static final String MENUHTML_FOLDER = "menuhtml";
 }

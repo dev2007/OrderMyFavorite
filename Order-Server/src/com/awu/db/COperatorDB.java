@@ -1,7 +1,11 @@
 package com.awu.db;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 import com.awu.db.entity.CDataRow;
 import com.awu.db.entity.CDataTable;
+import com.awu.entity.COperator;
 
 /**
  * Operator db class.
@@ -57,6 +61,59 @@ public class COperatorDB extends CCommonDB {
 			return dt;
 		} catch (Exception e) {
 			return new CDataTable();
+		}
+	}
+	
+	/**
+	 * add an operator.
+	 * @param instance
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 */
+	public Boolean addOperator(COperator instance) throws SQLException, ClassNotFoundException{
+		String sql = "insert into waiter(fullname,age,sex,phonenumber) values(?,?,?,?);";
+		String sql2 = "insert into operator(fullname,username,password,roleid,waiterid)";
+		sql2 += "select ?,?,?,?,idwaiter ";
+		sql2 += "from waiter where fullname = ?;";
+		ArrayList<Object> params = new ArrayList<>();
+		params.add(instance.getFullName());
+		params.add(instance.getAge());
+		params.add(instance.getSex());
+		params.add(instance.getPhoneNumber());
+		
+		ArrayList<Object> params2 = new ArrayList<>();
+		params2.add(instance.getFullName());
+		params2.add(instance.getUserName());
+		params2.add(instance.getPassword());
+		params2.add(instance.getRoleId());
+		params2.add(instance.getFullName());
+				
+		try {
+			dbUtils.GetConnection().setAutoCommit(false);
+			int i = dbUtils.executeNonQuery(sql,params);
+			
+			if(i <= 0){
+				dbUtils.GetConnection().rollback();
+				return false;
+			}
+			
+			i = dbUtils.executeNonQuery(sql2, params2);
+			
+			if(i <= 0){
+				dbUtils.GetConnection().rollback();
+				return false;
+			}
+			if(i <= 0){
+				dbUtils.GetConnection().rollback();
+				return false;
+			}
+			dbUtils.GetConnection().commit();
+			return true;
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			dbUtils.GetConnection().rollback();
+			return false;
 		}
 	}
 	

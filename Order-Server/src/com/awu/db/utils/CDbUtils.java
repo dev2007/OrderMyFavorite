@@ -7,13 +7,9 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Hashtable;
-
-import sun.awt.image.OffScreenImage;
 
 import com.awu.db.entity.CDataRow;
 import com.awu.db.entity.CDataTable;
-import com.mysql.jdbc.PreparedStatement;
 
 /***
  * Database utils.
@@ -35,10 +31,9 @@ public class CDbUtils {
 			SQLException {
 
 		if (null == currentConnection) {
-			return createConnection();
-		} else {
-			return currentConnection;
+			currentConnection = createConnection();
 		}
+		return currentConnection;
 	}
 
 	private Connection createConnection() throws ClassNotFoundException,
@@ -61,8 +56,7 @@ public class CDbUtils {
 	 * @throws SQLException
 	 */
 	@SuppressWarnings("finally")
-	public CDataTable executeQuery(String sql)
-			throws SQLException {
+	public CDataTable executeQuery(String sql) throws SQLException {
 		ResultSet rSet = null;
 		Statement statement = null;
 
@@ -83,7 +77,7 @@ public class CDbUtils {
 
 			rSet.close();
 			statement.close();
-			
+
 			return dTable;
 		}
 	}
@@ -97,8 +91,8 @@ public class CDbUtils {
 	 * @throws SQLException
 	 */
 	@SuppressWarnings("finally")
-	public CDataTable executeQuery(String sql,
-			ArrayList<Object> params) throws SQLException {
+	public CDataTable executeQuery(String sql, ArrayList<Object> params)
+			throws SQLException {
 		ResultSet rSet = null;
 		java.sql.PreparedStatement preStatement = null;
 		CDataTable dTable = new CDataTable();
@@ -118,7 +112,7 @@ public class CDbUtils {
 
 			rSet.close();
 			preStatement.close();
-			
+
 			return dTable;
 		}
 	}
@@ -129,11 +123,10 @@ public class CDbUtils {
 	 * 
 	 * @param sql
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@SuppressWarnings("finally")
-	public CDataRow selectSingleRow(String sql)
-			throws Exception {
+	public CDataRow selectSingleRow(String sql) throws Exception {
 		ResultSet rSet = null;
 		Statement statement = null;
 		ResultSetMetaData meta = null;
@@ -153,7 +146,7 @@ public class CDbUtils {
 			e.printStackTrace();
 		} finally {
 			CDataRow row = new CDataRow();
-			
+
 			if (rSet.next()) {
 				row = converResetRow(rSet, meta, columnsCount);
 			}
@@ -170,11 +163,11 @@ public class CDbUtils {
 	 * 
 	 * @param sql
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@SuppressWarnings("finally")
-	public CDataRow selectSingleRow(String sql,
-			ArrayList<Object> params) throws Exception {
+	public CDataRow selectSingleRow(String sql, ArrayList<Object> params)
+			throws Exception {
 		ResultSet rSet = null;
 		java.sql.PreparedStatement statement = null;
 		ResultSetMetaData meta = null;
@@ -233,21 +226,49 @@ public class CDbUtils {
 		}
 	}
 
-	
+	/**
+	 * Execute NonQuery with paramaters.
+	 * 
+	 * @param sql
+	 * @return Int 1.Be affected row number 2.0
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("finally")
+	public int executeNonQuery(String sql, ArrayList<Object> params)
+			throws SQLException {
+		int result = 0;
+		java.sql.PreparedStatement statement = null;
+		try {
+			Connection conn = GetConnection();
+			statement = conn.prepareStatement(sql);
+			bindParams(statement, params);
+			result = statement.executeUpdate();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (null != statement)
+				statement.close();
+			return result;
+		}
+	}
+
 	/**
 	 * Convert ResultSet to CDataTable.
+	 * 
 	 * @param rSet
 	 * @return
 	 */
-	private CDataTable convertResetToTable(ResultSet rSet){
+	private CDataTable convertResetToTable(ResultSet rSet) {
 		CDataTable dTable = new CDataTable();
-		
+
 		ResultSetMetaData meta;
 		int columnsCount = 0;
 		try {
 			meta = rSet.getMetaData();
 			columnsCount = meta.getColumnCount();
-			
+
 			while (rSet.next()) {
 				CDataRow row = converResetRow(rSet, meta, columnsCount);
 				dTable.addRow(row);
@@ -259,9 +280,9 @@ public class CDbUtils {
 		return dTable;
 	}
 
-
 	/**
 	 * Convert Resultset one row to CDataRow object.
+	 * 
 	 * @param rSet
 	 * @param meta
 	 * @param columnsCount

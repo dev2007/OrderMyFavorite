@@ -9,9 +9,11 @@ import com.awu.db.utils.CDbUtils;
  *
  */
 public class CCommonDB {
-	protected CDbUtils dbUtils = null;
+	protected static CDbUtils dbUtils = null;
 	
 	public CCommonDB(){
-		dbUtils = new CDbUtils();
+		if(null == dbUtils){
+			dbUtils = new CDbUtils();
+		}
 	}
 }

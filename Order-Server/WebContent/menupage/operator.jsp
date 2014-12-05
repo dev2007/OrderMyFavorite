@@ -57,7 +57,7 @@
 		Ext.apply(Ext.form.VTypes, {
 			password : function(val, field) {
 				if (field.confirmTo) {
-					var pwd = Ext.get(field.confirmTo);
+					var pwd = field.up('form').down('#' +field.confirmTo);
 					return (val == pwd.getValue());
 				}
 				return true;
@@ -79,18 +79,18 @@
 				fieldWidth : 60,
 				x : 5,
 				anchor : '-5',
-				allowBlank : false
+				allowBlank : true
 			},
 			items : [ {
 				fieldLabel : '用户名',
-				y : 5,
+				y : 2.5,
 				maxLength : 45,
 				minLength : 6,
 				name : 'username'
 			}, {
 				fieldLabel : '密码',
 				inputType : "password",
-				y : yOffset,
+				y : 2.5 + yOffset,
 				name : 'password',
 				id : 'pass'
 			}, {
@@ -102,7 +102,8 @@
 				y : 2 * yOffset
 			}, {
 				fieldLabel : '权限组',
-				y : 3 * yOffset
+				y : 3 * yOffset,
+				name : 'roleid'
 			}, {
 				fieldLabel : '姓名',
 				maxLength : 45,
@@ -129,6 +130,12 @@
 				name : 'phonenumber'
 			} ]
 		});
+		
+		//operation type.
+		//1.add		add opeator.
+		//2.delete	delete operator.
+		//3.edit		edit operator.
+		var opType = "add";
 
 		var win = Ext.create('Ext.window.Window', {
 			title : '添加人员',
@@ -142,7 +149,25 @@
 			modal : true,
 			items : form,
 			buttons : [ {
-				text : '添加'
+				text : '添加',
+				listeners:{
+					'click':function(){
+						opType = "add";
+						
+						form.getForm().submit({
+						    url: "operator",
+						    params : {
+						    	'type': opType
+						    },
+						    success: function (form, action) {
+						        Ext.Msg.alert('Success', action.result.msg);
+						    },
+						    failure: function(form, action) {
+		                        Ext.Msg.alert('Failed', action.result.msg);
+		                    }
+						});
+					}
+				}
 			}, {
 				text : '取消',
 				listeners : {
