@@ -13,29 +13,53 @@ import com.awu.db.entity.CDataTable;
 
 /***
  * Database utils.
- * 
+ * These method use autocommit default.
+ * If you need use transacation,you need set commit model to false,like conn.setAutoCommit(false),
+ * after your operation finish,you need set commit model to true,like conn.setAutoCommit(true)
+ * if you forget set it,you may be face some bugs such like 'can't query data'.
  * @author Awu
  * 
  */
 public class CDbUtils {
-	private static Connection currentConnection = null;
-
+	/**
+	 * Db connection.
+	 */
+	private static Connection currentConnection;
+	
+	/**
+	 * Constructor.
+	 */
+	public CDbUtils(){
+		try {
+			currentConnection = createConnection();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/***
 	 * Get database connection.
 	 * 
+	 * If you use conn.setAutoCommit(false) to realize transaction,
+	 * after your operation,you need set commit model to true, conn.setAutoCommit(true)
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 */
+	public Connection getConnection() throws ClassNotFoundException, SQLException{
+		if(null == currentConnection)
+			currentConnection = createConnection();
+		return currentConnection;
+	}
+
+	/**
+	 * Create db connection.
 	 * @return
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public Connection GetConnection() throws ClassNotFoundException,
-			SQLException {
-
-		if (null == currentConnection) {
-			currentConnection = createConnection();
-		}
-		return currentConnection;
-	}
-
 	private Connection createConnection() throws ClassNotFoundException,
 			SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
@@ -63,13 +87,10 @@ public class CDbUtils {
 		CDataTable dTable = new CDataTable();
 
 		try {
-			Connection conn = GetConnection();
-			statement = conn.createStatement();
+			statement = currentConnection.createStatement();
 
 			rSet = statement.executeQuery(sql);
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -98,13 +119,10 @@ public class CDbUtils {
 		CDataTable dTable = new CDataTable();
 
 		try {
-			Connection conn = GetConnection();
-			preStatement = conn.prepareStatement(sql);
+			preStatement = currentConnection.prepareStatement(sql);
 			bindParams(preStatement, params);
 			rSet = preStatement.executeQuery();
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -121,7 +139,7 @@ public class CDbUtils {
 	 * select single row of query result. if has more rows,just return the first
 	 * row.
 	 * 
-	 * @param sql
+	 * @param sql query sql,such like 'SELECT * FROM AA WHERE BB = CC'
 	 * @return
 	 * @throws Exception
 	 */
@@ -133,15 +151,12 @@ public class CDbUtils {
 		int columnsCount = 0;
 
 		try {
-			Connection conn = GetConnection();
-			statement = conn.createStatement();
+			statement = currentConnection.createStatement();
 
 			rSet = statement.executeQuery(sql);
 			meta = rSet.getMetaData();
 			columnsCount = meta.getColumnCount();
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -174,16 +189,13 @@ public class CDbUtils {
 		int columnsCount = 0;
 
 		try {
-			Connection conn = GetConnection();
-			statement = conn.prepareStatement(sql);
+			statement = currentConnection.prepareStatement(sql);
 			bindParams(statement, params);
 
 			rSet = statement.executeQuery();
 			meta = rSet.getMetaData();
 			columnsCount = meta.getColumnCount();
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -210,13 +222,10 @@ public class CDbUtils {
 		int result = 0;
 		Statement statement = null;
 		try {
-			Connection conn = GetConnection();
-			statement = conn.createStatement();
+			statement = currentConnection.createStatement();
 
 			result = statement.executeUpdate(sql);
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -239,12 +248,9 @@ public class CDbUtils {
 		int result = 0;
 		java.sql.PreparedStatement statement = null;
 		try {
-			Connection conn = GetConnection();
-			statement = conn.prepareStatement(sql);
+			statement = currentConnection.prepareStatement(sql);
 			bindParams(statement, params);
 			result = statement.executeUpdate();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

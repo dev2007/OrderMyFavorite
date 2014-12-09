@@ -6,11 +6,12 @@ package com.awu.db.utils;
  *
  */
 public enum EDBMSG {
-	OK("ok",1),
-	ERROR("error",2),
-	FAIL("fail",3),
-	USERNAME_ERROR("nameerror",4),
-	PASSWORD_ERROR("pwderror",5);
+	OK("ok",0),
+	ERROR("error",1),
+	FAIL("fail",2),
+	USERNAME_ERROR("nameerror",3),
+	PASSWORD_ERROR("pwderror",4),
+	USERNAME_REPEAT("usernamerepeat",5);
 	
 	private String name;
 	private int index;

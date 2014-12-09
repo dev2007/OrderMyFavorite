@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.awu.db.COperatorDB;
+import com.awu.db.utils.EDBMSG;
 import com.awu.entity.COperator;
 import com.awu.utils.CommonStr;
 
@@ -35,6 +36,15 @@ public class COperatorBL {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			break;
+			case "delete":
+				try {
+					deleteOperator(request, response);
+				} catch (ClassNotFoundException | SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
 			default:
 				break;
 			}
@@ -75,12 +85,62 @@ public class COperatorBL {
 		instance.setSex(Integer.parseInt(request.getParameter("sex")));
 		instance.setUserName(request.getParameter("username"));
 		
-		Boolean result = dbl.addOperator(instance);
+		EDBMSG result = dbl.addOperator(instance);
+		
+		response.setContentType(CommonStr.HTML_UTF8);
 		PrintWriter writer = response.getWriter();
-		if(result)
-		writer.write("{\"success\":true,\"msg\":\"Test ok\"}");
-		else {
-			writer.write("{\"success\":false,\"msg\":\"Test failed\"}");
+		writer.write(formatStr(result));
+	}
+	
+	/**
+	 * Delete an operator.
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	private void deleteOperator(HttpServletRequest request, HttpServletResponse response) throws IOException, ClassNotFoundException, SQLException{
+		String userName = request.getParameter("username");
+		EDBMSG result = dbl.deleteOperator(userName);
+		
+		response.setContentType(CommonStr.HTML_UTF8);
+		PrintWriter writer = response.getWriter();
+		
+		if(result == EDBMSG.OK)
+			writer.write("删除成功");
+		else if(result == EDBMSG.FAIL)
+			writer.write("删除失败！");
+		else if(result == EDBMSG.ERROR)
+			writer.write("操作异常，请重试！");
+	}
+	
+	/**
+	 * Format operation result message string.
+	 * @param result
+	 * @return
+	 */
+	private String formatStr(EDBMSG result){
+		String format = "{\"success\":%s,\"msg\":\"%s\"}";
+		String trueFlag = "true";
+		String falseFalg = "false";
+		
+		String msg = "";
+		if(result == EDBMSG.OK)
+			msg = String.format(format, trueFlag,"添加成功");
+		else if(result == EDBMSG.FAIL){
+			msg = String.format(format, falseFalg,"数据库异常");
 		}
+		else if(result == EDBMSG.ERROR){
+			msg = String.format(format, falseFalg,"数据库出错");
+		}
+		else if(result == EDBMSG.USERNAME_REPEAT){
+			msg = String.format(format, falseFalg,"用户名重复，请换一个重试！");
+		}
+		else {
+			msg = String.format(format, falseFalg,"操作异常！");
+		}
+		
+		return msg;
 	}
 }

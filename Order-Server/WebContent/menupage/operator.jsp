@@ -68,7 +68,7 @@
 		var yOffset = 30;
 		
 		//operator form.
-		var form = Ext.create('Ext.form.Panel', {
+		var formPanel = Ext.create('Ext.form.Panel', {
 			layout : 'absolute',
 			url : 'operator',
 			defaultType : 'textfield',
@@ -96,9 +96,9 @@
 			}, {
 				fieldLabel : '确认密码',
 				inputType : "password",
-				vtype : "password",//自定义的验证类型 
+				vtype : "password",//check type
 				vtypeText : "两次密码不一致！",
-				confirmTo : "pass",//要比较的另外一个的组件的id 
+				confirmTo : "pass",//need another id
 				y : 2 * yOffset
 			}, {
 				fieldLabel : '权限组',
@@ -147,23 +147,25 @@
 			layout : 'fit',
 			plain : true,
 			modal : true,
-			items : form,
+			items : formPanel,
 			buttons : [ {
 				text : '添加',
 				listeners:{
 					'click':function(){
 						opType = "add";
 						
-						form.getForm().submit({
+						formPanel.getForm().submit({
 						    url: "operator",
 						    params : {
 						    	'type': opType
 						    },
 						    success: function (form, action) {
-						        Ext.Msg.alert('Success', action.result.msg);
+						        Ext.Msg.alert('提示', action.result.msg);
+						        win.close();
+						       store.load({start : 0,limit : pageSize});
 						    },
 						    failure: function(form, action) {
-		                        Ext.Msg.alert('Failed', action.result.msg);
+		                        Ext.Msg.alert('提示', action.result.msg);
 		                    }
 						});
 					}
@@ -179,12 +181,15 @@
 		});
 
 		//grid
-		new Ext.grid.Panel({
+		var grid = new Ext.grid.Panel({
 			title : '',
 			store : store,
 			columns : [ new Ext.grid.RowNumberer(), {
 				text : '姓名',
 				dataIndex : 'fullname'
+			}, {
+				text : '用户名',
+				dataIndex : 'username'
 			}, {
 				text : '年龄',
 				dataIndex : 'age'
@@ -203,14 +208,31 @@
 					tooltip : '编 辑',
 					handler : function(grid, rowIndex, colIndex) {
 						var rec = grid.getStore().getAt(rowIndex);
-						alert("Edit " + rec.get('fullname'));
+						alert("Edit " + rec.get('username'));
 					}
 				}, '->', {
 					icon : 'icons/fam/user_delete.png',
 					tooltip : '删 除',
 					handler : function(grid, rowIndex, colIndex) {
 						var rec = grid.getStore().getAt(rowIndex);
-						alert("Terminate " + rec.get('fullname'));
+						Ext.MessageBox.confirm('提示','确定删除用户' + rec.get('username') + '？',
+								function(id){
+									if(id == 'yes'){
+										Ext.Ajax.request({
+										    url: 'operator',
+										    params: {
+										    	type : 'delete',
+										        username : rec.get('username')
+										    },
+										    success: function(response){
+										        var text = response.responseText;
+										        Ext.MessageBox.alert('提示',text,function(id){
+										        	store.load({start : 0,limit : pageSize});
+										        });
+										    }
+										});
+									}
+								});
 					}
 				} ]
 			} ],

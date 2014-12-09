@@ -29,7 +29,7 @@ public class CDbUtilsTest {
 	@Test
 	public void testGetConnection() {
 		try {
-			assertTrue(utils.GetConnection() != null);
+			assertTrue(utils.getConnection() != null);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {

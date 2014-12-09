@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.awu.db.entity.CDataRow;
 import com.awu.db.entity.CDataTable;
+import com.awu.db.utils.EDBMSG;
 import com.awu.entity.COperator;
 
 /**
@@ -67,11 +68,15 @@ public class COperatorDB extends CCommonDB {
 	/**
 	 * add an operator.
 	 * @param instance
-	 * @return
+	 * @return EDBMSG 's value.
 	 * @throws SQLException 
 	 * @throws ClassNotFoundException 
 	 */
-	public Boolean addOperator(COperator instance) throws SQLException, ClassNotFoundException{
+	public EDBMSG addOperator(COperator instance) throws SQLException, ClassNotFoundException{
+		
+		if(validateUserName(instance.getUserName()))
+			return EDBMSG.USERNAME_REPEAT;
+		
 		String sql = "insert into waiter(fullname,age,sex,phonenumber) values(?,?,?,?);";
 		String sql2 = "insert into operator(fullname,username,password,roleid,waiterid)";
 		sql2 += "select ?,?,?,?,idwaiter ";
@@ -90,33 +95,84 @@ public class COperatorDB extends CCommonDB {
 		params2.add(instance.getFullName());
 				
 		try {
-			dbUtils.GetConnection().setAutoCommit(false);
+			dbUtils.getConnection().setAutoCommit(false);
 			int i = dbUtils.executeNonQuery(sql,params);
 			
 			if(i <= 0){
-				dbUtils.GetConnection().rollback();
-				return false;
+				dbUtils.getConnection().rollback();
+				return EDBMSG.FAIL;
 			}
 			
 			i = dbUtils.executeNonQuery(sql2, params2);
 			
 			if(i <= 0){
-				dbUtils.GetConnection().rollback();
-				return false;
+				dbUtils.getConnection().rollback();
+				return EDBMSG.FAIL;
 			}
-			if(i <= 0){
-				dbUtils.GetConnection().rollback();
-				return false;
-			}
-			dbUtils.GetConnection().commit();
-			return true;
+			
+			dbUtils.getConnection().commit();
+			dbUtils.getConnection().setAutoCommit(true);
+			return EDBMSG.OK;
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			dbUtils.GetConnection().rollback();
-			return false;
+			dbUtils.getConnection().rollback();
+			return EDBMSG.ERROR;
 		}
 	}
 	
+	/**
+	 * Delete an operator.
+	 * @param userName
+	 * @return
+	 */
+	public EDBMSG deleteOperator(String userName){
+		String sql = "delete from waiter where idwaiter in (select waiterid from operator where username = ?);";
+		String sql2 = "delete from operator where username = ?";
+		ArrayList<Object> params = new ArrayList<>();
+		params.add(userName);
+		
+		try {
+			dbUtils.getConnection().setAutoCommit(false);
+			dbUtils.executeNonQuery(sql, params);
+			dbUtils.executeNonQuery(sql2,params);
+			
+			dbUtils.getConnection().commit();
+			dbUtils.getConnection().setAutoCommit(true);
+			return EDBMSG.OK;
+		} catch (Exception e) {
+			try {
+				dbUtils.getConnection().rollback();
+				dbUtils.getConnection().setAutoCommit(true);
+			} catch (ClassNotFoundException | SQLException e1) {
+				e1.printStackTrace();
+			}
+			return EDBMSG.ERROR;
+		}
+	}
+	
+	/**
+	 * Validate username has been used.
+	 * @param userName
+	 * @return True. be used. False.not be used.
+	 */
+	private Boolean validateUserName(String userName){
+		String checkSql = "select idoperator from operator where username = ?";
+		ArrayList<Object> params = new ArrayList<>();
+		params.add(userName);
+		
+		try {
+			CDataRow row = dbUtils.selectSingleRow(checkSql,params);
+			return null != row;
+		} catch (Exception e) {
+			return true;
+		}
+		
+	}
+	
+	/**
+	 * Get operator records number.
+	 * @return
+	 */
 	private int getTotalRecord(){
 		String sumSql = "select count(operator.idoperator) as total from operator ";
 		sumSql += "left join waiter  on operator.waiterid = waiter.idwaiter ";

@@ -57,7 +57,7 @@ public class InitServiceListener implements ServletContextListener {
     	System.out.println("init database connection.");
     	CDbUtils dbUtils = new CDbUtils();
     	try {
-			dbUtils.GetConnection();
+			dbUtils.getConnection();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
