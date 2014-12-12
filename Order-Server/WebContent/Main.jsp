@@ -10,6 +10,12 @@
 <script type="text/javascript" src="ext-4.2.1/ext-all.js"></script>
 <script type="text/javascript" src="ext-4.2.1/ext-lang-zh_CN.js"></script>
 <script type="text/javascript">
+
+	//charge login state.
+	<% if(null == session.getAttribute("username")){
+		response.sendRedirect("CorpLogin.jsp");
+	}%>
+	
 	//按菜单结点判断相应的加载页面
 	var id = 0;
 	
@@ -63,7 +69,7 @@
 		                                'title' : record.raw.text,
 		                                closable : true,
 		                                autoLoad:{
-		                                	url:Link(),//'Menu?menuid='+record.raw.id,//TODO:Tab页面
+		                                	url:Link(),
 		                                	scripts:true}
 		                            });
 		                        }
@@ -77,8 +83,7 @@
 				});
 
 				//功能区
-				var contentPanel = new Ext.TabPanel(
-						{
+				var contentPanel = new Ext.TabPanel({
 							region : 'center',
 							enableTabScroll : true,
 							activeTab : 0,
@@ -89,7 +94,57 @@
 								html : '<div style="position:absolute;color:#ff0000;top:40%;left:40%;">欢迎登录综合管理系统</div>'
 							} ]
 						});
-							
+				
+				//管理区
+				var managePanel = new Ext.panel.Panel({
+					region : "north",
+					title : '综合管理系统',
+					layout: {
+						type: 'table',
+				        // The total column count must be specified here
+				        columns: 2
+					},
+					collapsible : false,
+					items : [
+								{
+									 xtype :'button',
+									 text : '当前操作员：<%=(String)session.getAttribute("username")%>',
+									 border : 0,
+									 scale : 'medium',
+									 style: {
+								         marginRight:'10px'
+								  	}
+								},
+					         	{
+					        	 	xtype :'button',
+					        	 	text : '注销',
+									icon : 'icons/fam/cross.gif',
+									border : 1,
+									style : {
+										borderColor : 'gray',
+										borderStyle : 'solid',
+										marginTop: '2px',
+										marginBottom: '2px'
+									},
+									listeners:{
+										'click':function(){
+											Ext.MessageBox.confirm('提示','确定退出登录？',
+													function(id){
+														if(id == 'yes'){
+															Ext.Ajax.request({
+																url : 'logout',
+																success: function(resp,opts) {
+																	location.href = "CorpLogin.jsp";
+																}
+															});
+														}
+											});
+										}
+									}
+					         	}
+					         ]
+						});
+				
 				//布局
 				new Ext.Viewport({
 					title : "Viewport",
@@ -98,11 +153,9 @@
 						bodyStyle : "background-color: #FFFFFF;",
 						frame : true
 					},
-					items : [ menu_Tree, {
-						region : "north",
-						title : '综合管理系统',
-						collapsible : false
-					}, contentPanel ]
+					items : [ menu_Tree,
+					          managePanel, 
+					          contentPanel ]
 				});
 
 			});

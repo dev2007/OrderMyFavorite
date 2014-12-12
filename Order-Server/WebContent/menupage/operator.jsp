@@ -25,13 +25,16 @@
 			}, {
 				name : 'phonenumber',
 				type : 'string'
+			}, {
+				name : 'rolename',
+				type : 'string'
 			} ]
 		});
 
 		//query page number
 		var pageSize = 20;
 
-		//store
+		//list store
 		var store = new Ext.data.Store({
 			model : 'User',
 			pageSize : pageSize,
@@ -52,6 +55,36 @@
 				limit : pageSize
 			}
 		});
+		
+		//limit listitems store.
+		var limitStore = new Ext.data.Store({
+			fields : ['idrole','fullname'],
+			proxy : {
+				type : 'ajax',
+				url : 'operator',
+				reader : {
+					type : 'json',
+					root : 'limit'
+				},
+				extraParams : {
+					type : 'limit'
+				},
+				autoLoad:true
+			}
+		});
+		
+		//limit comboBox
+		var limitComboBox = new Ext.form.ComboBox({
+			name : 'roleid',
+			fieldLabel : '权限组',
+			store : limitStore,
+			displayField : 'fullname',
+			valueField : 'idrole',
+			mode : 'remote',
+			triggerAction:"all",
+			editable:false,
+			emptyText : '请选择权限组'
+		});
 
 		//check password twice
 		Ext.apply(Ext.form.VTypes, {
@@ -64,33 +97,26 @@
 			}
 		});
 
-		//default field y offset value.
-		var yOffset = 30;
 		
 		//operator form.
 		var formPanel = Ext.create('Ext.form.Panel', {
-			layout : 'absolute',
+			layout : 'form',
+			width : 300,
+			bodyPadding: 5,
 			url : 'operator',
 			defaultType : 'textfield',
 			border : false,
 			fieldDefaults : {
-				labelWidth : 60,
-				labelAlign : "left",
-				fieldWidth : 60,
-				x : 5,
-				anchor : '-5',
 				allowBlank : true
 			},
 			items : [ {
 				fieldLabel : '用户名',
-				y : 2.5,
 				maxLength : 45,
-				minLength : 6,
+				minLength : 2,
 				name : 'username'
 			}, {
 				fieldLabel : '密码',
 				inputType : "password",
-				y : 2.5 + yOffset,
 				name : 'password',
 				id : 'pass'
 			}, {
@@ -98,35 +124,33 @@
 				inputType : "password",
 				vtype : "password",//check type
 				vtypeText : "两次密码不一致！",
-				confirmTo : "pass",//need another id
-				y : 2 * yOffset
-			}, {
-				fieldLabel : '权限组',
-				y : 3 * yOffset,
-				name : 'roleid'
-			}, {
+				confirmTo : "pass"//need another id
+			}, 
+			limitComboBox, 
+			{
 				fieldLabel : '姓名',
 				maxLength : 45,
 				minLength : 2,
-				y : 4 * yOffset,
 				name : 'fullname'
 			}, {
 				fieldLabel : '年龄',
 				xtype : 'numberfield',
 				minValue : 0,
 				maxValue : 100,
-				y : 5 * yOffset,
 				name : 'age'
 			}, {
 				fieldLabel : '性别',
-				y : 6 * yOffset,
-				name : 'sex'
+				xtype : 'radiogroup',
+				columns : 2,
+				vertical : false,
+				items : [
+				         {boxLabel : '男', name : 'sex', inputValue : '1', checked : true},
+				         {boxLabel : '女', name : 'sex', inputValue : '0'}]
 			}, {
 				fieldLabel : '电话',
 				xtype : 'numberfield',
 				maxLength : 12,
 				minLength : 7,
-				y : 7 * yOffset,
 				name : 'phonenumber'
 			} ]
 		});
@@ -136,7 +160,8 @@
 		//2.delete	delete operator.
 		//3.edit		edit operator.
 		var opType = "add";
-
+		
+		//add operator window
 		var win = Ext.create('Ext.window.Window', {
 			title : '添加人员',
 			closeAction : 'hide',
@@ -155,12 +180,15 @@
 						opType = "add";
 						
 						formPanel.getForm().submit({
+							waitTitle:"请稍候",
+		                    waitMsg:"正在提交数据，请稍候",
 						    url: "operator",
 						    params : {
 						    	'type': opType
 						    },
 						    success: function (form, action) {
 						        Ext.Msg.alert('提示', action.result.msg);
+						        formPanel.getForm().reset();
 						        win.close();
 						       store.load({start : 0,limit : pageSize});
 						    },
@@ -190,6 +218,9 @@
 			}, {
 				text : '用户名',
 				dataIndex : 'username'
+			}, {
+				text : '权限组',
+				dataIndex : 'rolename'
 			}, {
 				text : '年龄',
 				dataIndex : 'age'

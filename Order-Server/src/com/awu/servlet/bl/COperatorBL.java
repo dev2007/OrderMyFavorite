@@ -22,6 +22,8 @@ public class COperatorBL {
 	public void run(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		if(null != request.getParameter("type")){
 			String type = (String)request.getParameter("type");
+			type = type.toLowerCase();
+			
 			switch (type) {
 			case "list":
 				getOperatorList(request, response);
@@ -41,7 +43,13 @@ public class COperatorBL {
 				try {
 					deleteOperator(request, response);
 				} catch (ClassNotFoundException | SQLException e) {
-					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+			case "limit":
+				try {
+					roleList(request, response);
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				break;
@@ -102,10 +110,16 @@ public class COperatorBL {
 	 */
 	private void deleteOperator(HttpServletRequest request, HttpServletResponse response) throws IOException, ClassNotFoundException, SQLException{
 		String userName = request.getParameter("username");
-		EDBMSG result = dbl.deleteOperator(userName);
 		
 		response.setContentType(CommonStr.HTML_UTF8);
 		PrintWriter writer = response.getWriter();
+		
+		if(userName.equals("admin")){
+			writer.write("超级管理员禁止删除！");
+			return;
+		}
+		
+		EDBMSG result = dbl.deleteOperator(userName);
 		
 		if(result == EDBMSG.OK)
 			writer.write("删除成功");
@@ -113,6 +127,13 @@ public class COperatorBL {
 			writer.write("删除失败！");
 		else if(result == EDBMSG.ERROR)
 			writer.write("操作异常，请重试！");
+	}
+	
+	private void roleList(HttpServletRequest request, HttpServletResponse response) throws IOException, ClassNotFoundException, SQLException{
+
+		response.setContentType(CommonStr.HTML_UTF8);
+		PrintWriter writer = response.getWriter();
+		writer.write(dbl.getRoleList());
 	}
 	
 	/**
