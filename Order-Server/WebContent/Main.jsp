@@ -22,7 +22,7 @@
 	function Link(){
 		var url = "menupage/";
 		if(id == 1){
-			url += "";
+			url += "dish.jsp";
 		}else if(id == 2){
 			url += "operator.jsp";
 		}else if(id == 3){

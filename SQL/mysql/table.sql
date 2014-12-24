@@ -71,7 +71,7 @@ CREATE TABLE `orderdb`.`waiter` (
 
 CREATE TABLE `orderdb`.`goodsbase` (
   `idgoodsbase` INT NOT NULL AUTO_INCREMENT,
-  `unitprice` BLOB NULL,
+  `unitprice` DECIMAL NULL,
   `fullname` VARCHAR(200) NULL,
   `imageurl` VARCHAR(2000) NULL,
   `description` VARCHAR(2000) NULL,

@@ -225,7 +225,6 @@ public class CDbUtils {
 			statement = currentConnection.createStatement();
 
 			result = statement.executeUpdate(sql);
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -234,6 +233,7 @@ public class CDbUtils {
 			return result;
 		}
 	}
+	
 
 	/**
 	 * Execute NonQuery with paramaters.
@@ -251,6 +251,63 @@ public class CDbUtils {
 			statement = currentConnection.prepareStatement(sql);
 			bindParams(statement, params);
 			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (null != statement)
+				statement.close();
+			return result;
+		}
+	}
+	
+	/**
+	 * Execute Insert SQL,and return auto generated id.
+	 * 
+	 * @param sql
+	 * @return auto generated id. 0.operation fail,may be hasn't auto generated column.
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("finally")
+	public int executeInsertReturnId(String sql) throws SQLException {
+		int result = 0;
+		Statement statement = null;
+		try {
+			statement = currentConnection.createStatement();
+
+			statement.executeUpdate(sql,Statement.RETURN_GENERATED_KEYS);
+			ResultSet rSet = statement.getGeneratedKeys();
+			if(rSet.next()){
+				result =  rSet.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (null != statement)
+				statement.close();
+			return result;
+		}
+	}
+	
+	/**
+	 * Execute Insert SQL,and return auto generated id. with paramaters.
+	 * 
+	 * @param sql
+	 * @return auto generated id. 0.operation fail,may be hasn't auto generated column.
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("finally")
+	public int executeInsertReturnId(String sql, ArrayList<Object> params)
+			throws SQLException {
+		int result = 0;
+		java.sql.PreparedStatement statement = null;
+		try {
+			statement = currentConnection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			bindParams(statement, params);
+			statement.executeUpdate();
+			ResultSet rSet = statement.getGeneratedKeys();
+			if(rSet.next()){
+				result = rSet.getInt(1);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -322,6 +379,8 @@ public class CDbUtils {
 				ps.setInt(i + 1, (int) value);
 			} else if (value instanceof String) {
 				ps.setString(i + 1, (String) value);
+			} else if (value instanceof Float){
+				ps.setFloat(i + 1, (float)value);
 			}
 		}
 	}
