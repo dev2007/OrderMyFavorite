@@ -47,7 +47,6 @@ public class ServicesEndpointManager {
 			Map.Entry entry = (Map.Entry) iter.next();
 			Object key = entry.getKey(); 
 			Object val = entry.getValue();
-			//TODO:获取本机ip
 			Endpoint.publish("http://localhost:9898/"+key, val);
 			System.out.println("publish " + key + " ok");
 			}

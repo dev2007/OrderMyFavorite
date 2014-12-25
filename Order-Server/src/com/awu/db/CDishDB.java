@@ -112,10 +112,6 @@ public class CDishDB extends CCommonDB {
 		
 		ArrayList<Object> params2 = new ArrayList<>();
 		
-		System.out.println(params.get(0));
-		System.out.println(params.get(1));
-		System.out.println(params.get(2));
-		System.out.println(params.get(3));
 		try {
 			dbUtils.getConnection().setAutoCommit(false);
 			int result = dbUtils.executeInsertReturnId(sql, params);

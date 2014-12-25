@@ -12,7 +12,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  *
  */
 @WebService
-public class CTabletService implements IService{
+public class CTabletService implements IService{	
 	@WebMethod
 	public String ServiceName(){
 		return "TabletService";
